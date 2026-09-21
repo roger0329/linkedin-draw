@@ -70,13 +70,20 @@
   }
 
   /* ---------- minimal corner controls ---------- */
-  .corner-btn{
+  .corner-btn-group{
     position: fixed; top: 18px; right: 18px; z-index: 20;
+    display: flex; gap: 10px;
+  }
+  .corner-btn{
     background: rgba(0,0,0,0.7); border: 2px solid var(--green); color: var(--green);
     font-family: inherit; font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
     padding: 10px 18px; cursor: pointer; text-shadow: 0 0 5px rgba(51,255,156,0.6);
   }
   .corner-btn:hover{ background: rgba(51,255,156,0.12); }
+  .corner-btn.full-reset{
+    border-color: var(--red); color: var(--red); text-shadow: 0 0 5px rgba(255,76,76,0.6);
+  }
+  .corner-btn.full-reset:hover{ background: rgba(255,76,76,0.12); }
   .counter-fixed{
     position: fixed; top: 18px; left: 18px; z-index: 20;
     font-size: 13px; font-weight: 700; color: var(--green);
@@ -349,7 +356,10 @@
   <div class="flash-pulse" id="flashPulse"></div>
 
   <div class="counter-fixed" id="counter">尚未匯入</div>
-  <button class="corner-btn" id="rosterToggleBtn">名單</button>
+  <div class="corner-btn-group">
+    <button class="corner-btn full-reset" id="fullResetBtn">全部重置</button>
+    <button class="corner-btn" id="rosterToggleBtn">名單</button>
+  </div>
 
   <div class="roster-modal" id="rosterModal">
     <div class="roster-modal-inner">
@@ -506,6 +516,7 @@
   const hotspotRandom = document.getElementById('hotspotRandom');
   const poolMsg = document.getElementById('poolMsg');
   const resetBtn = document.getElementById('resetBtn');
+  const fullResetBtn = document.getElementById('fullResetBtn');
   const assignInput = document.getElementById('assignInput');
   const assignBtn = document.getElementById('assignBtn');
   const assignMsg = document.getElementById('assignMsg');
@@ -884,7 +895,7 @@
     reader.readAsArrayBuffer(file);
   });
 
-  resetBtn.addEventListener('click', () => {
+  function resetAllDraws(){
     isDrawing = false;
     roster.forEach(e => { e.drawn = false; e.method = null; });
     drawCount = 0;
@@ -895,6 +906,18 @@
     refreshAssignList();
     saveRosterToCloud();
     renderBgColumns();
+  }
+
+  resetBtn.addEventListener('click', resetAllDraws);
+
+  fullResetBtn.addEventListener('click', () => {
+    if (roster.length === 0) return;
+    const ok = confirm('確定要重置全部抽籤紀錄嗎？所有同學都會回到「尚未抽過」的狀態，此動作無法復原。');
+    if (!ok) return;
+    heroOverlay.classList.remove('active', 'ready');
+    heroOverlay.onclick = null;
+    resultOverlay.classList.remove('show');
+    resetAllDraws();
   });
 
   renderBgColumns();

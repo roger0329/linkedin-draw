@@ -673,10 +673,11 @@
 
   function commitPick(idx, method){
     isDrawing = true;
+    const alreadyDrawn = roster[idx].drawn;
     roster[idx].drawn = true;
     roster[idx].method = method;
     currentPick = roster[idx];
-    drawCount++;
+    if (!alreadyDrawn) drawCount++;
 
     renderRosterList();
     updateCounter();
@@ -773,7 +774,6 @@
   function refreshAssignList(){
     assignNameList.innerHTML = '';
     roster.forEach(e => {
-      if (e.drawn) return;
       const opt = document.createElement('option');
       opt.value = e.name;
       assignNameList.appendChild(opt);
@@ -802,10 +802,6 @@
     const idx = roster.findIndex(e => e.name === name);
     if (idx === -1){
       showAssignMsg('查無此姓名');
-      return;
-    }
-    if (roster[idx].drawn){
-      showAssignMsg('此同學已經抽過了');
       return;
     }
     assignInput.value = '';

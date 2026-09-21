@@ -528,6 +528,7 @@
   const flashPulse = document.getElementById('flashPulse');
 
   let currentPick = null;
+  let isDrawing = false; // 過場/開獎動畫進行中時鎖住，避免誤觸重複抽籤
 
   const PLACEHOLDER_BG = ['TNDA 數位創意創業思維','SYNAPSE STANDBY','WAITING FOR ROSTER','點右上角「名單」匯入','TNDA 數位創意創業思維','SYSTEM READY'];
 
@@ -671,6 +672,7 @@
   }
 
   function commitPick(idx, method){
+    isDrawing = true;
     roster[idx].drawn = true;
     roster[idx].method = method;
     currentPick = roster[idx];
@@ -739,6 +741,7 @@
   }
 
   function showResult(entry){
+    isDrawing = false;
     resultTag.textContent = entry.method === 'self' ? '自我推薦' : '抽到了';
     resultCard.classList.toggle('self', entry.method === 'self');
     resultName.textContent = entry.name;
@@ -752,6 +755,7 @@
   resultDismiss.addEventListener('click', () => { resultOverlay.classList.remove('show'); });
 
   hotspotRandom.addEventListener('click', () => {
+    if (isDrawing) return;
     const pool = roster.map((e,i) => i).filter(i => !roster[i].drawn);
     if (pool.length === 0) return;
     const idx = pool[Math.floor(Math.random() * pool.length)];
@@ -759,6 +763,7 @@
   });
 
   hotspotSelf.addEventListener('click', () => {
+    if (isDrawing) return;
     const pool = roster.map((e,i) => i).filter(i => !roster[i].drawn && roster[i].selfPool);
     if (pool.length === 0){ showPoolMsg(); return; }
     const idx = pool[Math.floor(Math.random() * pool.length)];
@@ -784,6 +789,7 @@
   }
 
   function commitAssign(){
+    if (isDrawing) return;
     const name = assignInput.value.trim();
     if (!name){
       showAssignMsg('請輸入姓名');
@@ -883,6 +889,7 @@
   });
 
   resetBtn.addEventListener('click', () => {
+    isDrawing = false;
     roster.forEach(e => { e.drawn = false; e.method = null; });
     drawCount = 0;
     resetBtn.style.display = 'none';

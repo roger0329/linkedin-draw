@@ -69,6 +69,13 @@
     background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.6) 68%, rgba(0,0,0,0.88) 100%);
   }
 
+  /* ---------- footer credit ---------- */
+  .footer-credit{
+    position: fixed; left: 50%; bottom: 8px; transform: translateX(-50%);
+    z-index: 5; font-size: 11px; letter-spacing: 0.08em; color: rgba(255,255,255,0.28);
+    text-shadow: 0 0 4px rgba(51,255,156,0.15); pointer-events: none; white-space: nowrap;
+  }
+
   /* ---------- minimal corner controls ---------- */
   .corner-btn-group{
     position: fixed; top: 18px; right: 18px; z-index: 20;
@@ -339,6 +346,8 @@
 </style>
 </head>
 <body>
+
+  <div class="footer-credit">小綱製作</div>
 
   <div class="bg-scroll" id="bgScroll">
     <div class="bg-col"><div class="bg-col-inner"></div></div>
